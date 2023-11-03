@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 app.use(helmet());
 app.use(cookieParser());
 DbConnection();
+app.get("/",(req,res)=>(res.send("server connected")))
 app.use("/", RegisterUserRouter);
 app.use("/", loginUserRouter);
 app.use("/", productRouter);
