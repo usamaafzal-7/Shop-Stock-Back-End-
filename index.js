@@ -20,5 +20,5 @@ app.use("/", RegisterUserRouter);
 app.use("/", loginUserRouter);
 app.use("/", productRouter);
 app.use("/", cartProductRouter);
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Port ${port} is listening`));

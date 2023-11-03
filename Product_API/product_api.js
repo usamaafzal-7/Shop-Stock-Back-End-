@@ -33,7 +33,7 @@ productRouter.put("/api/Product/:id", async (req, res) => {
   res.send(result);
 });
 
-productRouter.delete("/api/Product/:id", async () => {
+productRouter.delete("/api/Product/:id", async (req,res) => {
   const result = await Product.findByIdAndRemove(req.params.id);
   if (!result) res.status(404).send("Not Find This id");
   res.send(result);

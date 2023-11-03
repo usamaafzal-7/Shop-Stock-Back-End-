@@ -17,11 +17,15 @@ const cartProductSchema = mongoose.Schema({
   },
   productSubTotal: {
     require: true,
-    type: String,
+    type: Number,
   },
   productQuantity: {
     require: true,
     type: Number,
+  },
+  productId: {
+    require: true,
+    type: String,
   },
   productPrice: {
     require: true,
@@ -37,9 +41,10 @@ const ValidateCartProduct = (product) => {
   const schema = Joi.object({
     productImage: Joi.string().min(7).max(250).required(),
     productName: Joi.string().min(3).max(18).required(),
-    productSubTotal: Joi.string().required(),
+    productSubTotal: Joi.number().required(),
     productQuantity: Joi.number().required(),
     productPrice: Joi.number().min(7).max(3000000).required(),
+    productId:Joi.string()
   });
   return schema.validate(product);
 };

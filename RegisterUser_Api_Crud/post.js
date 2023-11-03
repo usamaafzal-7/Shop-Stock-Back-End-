@@ -6,25 +6,30 @@ import CreateJwt from "../CreateJwt/CreateJwt.js";
 
 const registerUserRouter = express.Router();
 
-registerUserRouter.post("/api/User", async (req, res) => {
+const user = registerUserRouter.post("/api/User", async (req, res) => {
   const { error, value } = ValidateUser(req.body);
   if (error) return res.status(401).send(error.details[0].message);
 
   const checkUserEmail = await User.findOne({ email: value.email });
   if (checkUserEmail) return res.status(400).send("User Already Exist");
 
-  if (value.password === value.confirmPassword) {
-    const salt = await bcrypt.genSalt(10);
+  // if (value.password === value.confirmPassword) {
+  const salt = await bcrypt.genSalt(10);
 
-    const hashedPassword = await bcrypt.hash(value.password, salt);
-    const user = await creatRegisterUser(res, value, hashedPassword);
-
+  const hashedPassword = await bcrypt.hash(value.password, salt);
+  const user = await creatRegisterUser(res, value, hashedPassword);
+  try {
     const result = await user.save();
 
     return res.send(result);
-  } else {
-    return res.status(400).send("Password not matched");
+  } catch (error) {
+    res.send("error", error);
   }
+
+  // }
+  //  else {
+  //   return res.status(400).send("Password not matched");
+  // }
 });
 
 registerUserRouter.get("/api/User", async (req, res) => {
@@ -35,7 +40,8 @@ registerUserRouter.get("/api/User", async (req, res) => {
 
 registerUserRouter.put("/api/User/:id", async (req, res) => {
   const result = await User.findByIdAndUpdate(req.params.id, {
-    name: req.body.name,
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
     email: req.body.email,
     password: req.body.password,
   });
@@ -43,7 +49,7 @@ registerUserRouter.put("/api/User/:id", async (req, res) => {
   res.send(result);
 });
 
-registerUserRouter.delete("/api/User/:id", async () => {
+registerUserRouter.delete("/api/User/:id", async (req, res) => {
   const result = await User.findByIdAndRemove(req.params.id);
   if (!result) res.status(404).send("Not Find This id");
   res.send(result);
@@ -53,11 +59,12 @@ export default registerUserRouter;
 
 const creatRegisterUser = async (res, value, hashedPassword) => {
   let user = new User({
-    name: value.name,
+    firstname: value.firstname,
+    lastname: value.lastname,
     email: value.email,
     password: hashedPassword,
   });
-  const token = CreateJwt(user);
-  user.tokens = user.tokens.concat({ token });
+  // const token = CreateJwt(user);
+  // user.tokens = user.tokens.concat({ token });
   return user;
 };
